@@ -16,23 +16,14 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .authorizeRequests { authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/api/hello").permitAll()
-                    .anyRequest().authenticated()
+            .csrf { csrf -> csrf.disable() } // Disable CSRF protection
+            .authorizeHttpRequests { auth ->
+                auth.anyRequest().permitAll() // Allow all requests
             }
-            .formLogin { formLogin ->
-                formLogin
-                    .permitAll()
-            }
-            .logout { logout ->
-                logout
-                    .permitAll()
-            }
-
+            .formLogin { login -> login.disable() } // Disable form login
+            .httpBasic { basic -> basic.disable() } // Disable HTTP basic authentication
         return http.build()
     }
-
     @Bean
     fun userDetailsService(): UserDetailsService {
         val user = User.withDefaultPasswordEncoder()

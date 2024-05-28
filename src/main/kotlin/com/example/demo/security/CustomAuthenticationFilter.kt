@@ -1,6 +1,6 @@
 package com.example.demo.security
 
-import com.example.demo.dto.apiDto.UserAPIData
+import com.example.demo.dto.apiDto.BaseUserAuthRes
 import com.example.demo.dto.entities.MainUser
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -45,14 +45,14 @@ class CustomAuthenticationFilter(private val webClient: WebClient) : OncePerRequ
         }
     }
 
-    private fun authenticate(ssid: String, key: String, token: String): Mono<UserAPIData> {
+    private fun authenticate(ssid: String, key: String, token: String): Mono<BaseUserAuthRes> {
         return webClient.get()
             .uri("https://portal.codeperts.com/user-api-authentication")
             .header("ssid", ssid)
             .header("key", key)
             .header("token", token)
             .retrieve()
-            .bodyToMono(UserAPIData::class.java)
+            .bodyToMono(BaseUserAuthRes::class.java)
     }
 
 

@@ -6,7 +6,6 @@ import com.example.demo.dto.apiDto.BaseUserAuthRes
 import com.example.demo.dto.apiDto.MeResponse
 import com.example.demo.model.CompanyUser
 import com.example.demo.service.MeService
-import com.example.demo.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

@@ -12,5 +12,7 @@ class UserService @Autowired constructor(
 
     fun getAllUsers(): List<User> = userRepository.findAll()
 
-    fun createUser(user: User): User = userRepository.save(user)
+    fun createUser(user: User): User {
+        return userRepository.save(user)
+    }
 }

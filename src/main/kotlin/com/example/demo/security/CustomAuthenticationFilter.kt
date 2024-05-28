@@ -1,5 +1,7 @@
 package com.example.demo.security
 
+import com.example.demo.dto.apiDto.UserAPIData
+import com.example.demo.dto.entities.MainUser
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -32,6 +34,7 @@ class CustomAuthenticationFilter(private val webClient: WebClient) : OncePerRequ
                     val auth = UsernamePasswordAuthenticationToken(user, null, user.authorities)
                     auth.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = auth
+                    request.setAttribute("authResponse", authResponse) // Store the AuthResponse in the request attribute
                 } else {
                     throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized")
                 }
@@ -42,16 +45,16 @@ class CustomAuthenticationFilter(private val webClient: WebClient) : OncePerRequ
         }
     }
 
-    private fun authenticate(ssid: String, key: String, token: String): Mono<AuthResponse> {
+    private fun authenticate(ssid: String, key: String, token: String): Mono<UserAPIData> {
         return webClient.get()
             .uri("https://portal.codeperts.com/user-api-authentication")
             .header("ssid", ssid)
             .header("key", key)
             .header("token", token)
             .retrieve()
-            .bodyToMono(AuthResponse::class.java)
+            .bodyToMono(UserAPIData::class.java)
     }
 
-    data class AuthResponse(val status: Boolean, val user: AuthUser)
-    data class AuthUser(val username: String)
+
+
 }

@@ -15,11 +15,20 @@ class SecurityConfig {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity, customAuthenticationFilter: CustomAuthenticationFilter): SecurityFilterChain {
+
         http
-            .csrf { it.disable() }
-            .authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
-            .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .authorizeHttpRequests { authorizeRequests ->
+                authorizeRequests.anyRequest().permitAll() // Allow all requests
+            }
+            .csrf { csrf -> csrf.disable() } // Disable CSRF protection
         return http.build()
+
+
+//        http
+//            .csrf { it.disable() }
+//            .authorizeHttpRequests { auth -> auth.anyRequest().authenticated() }
+//            .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+//        return http.build()
     }
 
     @Bean

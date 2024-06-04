@@ -1,6 +1,6 @@
 package com.example.demo.security
 
-import com.example.demo.security.CustomAuthenticationFilter
+//import com.example.demo.security.CustomAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient
 class SecurityConfig {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity, customAuthenticationFilter: CustomAuthenticationFilter): SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
 
         http
             .authorizeHttpRequests { authorizeRequests ->
@@ -31,10 +31,10 @@ class SecurityConfig {
 //        return http.build()
     }
 
-    @Bean
-    fun customAuthenticationFilter(webClient: WebClient): CustomAuthenticationFilter {
-        return CustomAuthenticationFilter(webClient)
-    }
+//    @Bean
+//    fun customAuthenticationFilter(webClient: WebClient): CustomAuthenticationFilter {
+//        return CustomAuthenticationFilter(webClient)
+//    }
 
     @Bean
     fun webClient(): WebClient {

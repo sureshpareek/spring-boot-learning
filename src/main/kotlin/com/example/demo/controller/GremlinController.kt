@@ -2,30 +2,26 @@ package com.example.demo.controller
 
 import com.example.demo.service.GremlinService
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.ResponseEntity
 
 @RestController
-@RequestMapping("/api/graph")
-class GraphController(private val gremlinService: GremlinService) {
+@RequestMapping("/gremlin")
+class GremlinController(private val gremlinService: GremlinService) {
 
-    @PostMapping("/vertex/{label}")
-    fun addVertex(@RequestParam label: String, @RequestBody properties: Map<String, Any>): Map<String, Any> {
-        return gremlinService.addVertex(label, properties)
+    data class VertexRequest(val label: String, val properties: Map<String, Any>)
+    data class VertexResponse(val data: String)
+
+    @PostMapping("/addVertex", consumes = ["application/json"], produces = ["application/json"])
+    fun addVertex(@RequestBody vertexRequest: VertexRequest): ResponseEntity<VertexResponse> {
+        val result = gremlinService.addVertex(vertexRequest.label, vertexRequest.properties)
+        return ResponseEntity.ok(VertexResponse(result))
     }
 
-    @PostMapping("/edge")
-    fun addEdge(
-        @RequestParam fromVertexId: Any,
-        @RequestParam toVertexId: Any,
-        @RequestParam label: String,
-        @RequestBody properties: Map<String, Any>
-    ): Map<String, Any> {
-        return gremlinService.addEdge(fromVertexId, toVertexId, label, properties)
-    }
+    data class VertexQueryRequest(val label: String, val propertyKey: String, val propertyValue: String)
 
-    @GetMapping("/vertices")
-    fun findVerticesByLabel(@RequestParam label: String): List<Map<String, Any>> {
-        return gremlinService.findVerticesByLabel(label)
+    @PostMapping("/getVertex", consumes = ["application/json"], produces = ["application/json"])
+    fun getVertex(@RequestBody vertexQueryRequest: VertexQueryRequest): ResponseEntity<VertexResponse> {
+        val result = gremlinService.getVertexByProperty(vertexQueryRequest.label, vertexQueryRequest.propertyKey, vertexQueryRequest.propertyValue)
+        return ResponseEntity.ok(VertexResponse(result))
     }
-
-    // Add more endpoints as needed
 }

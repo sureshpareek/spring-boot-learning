@@ -1,7 +1,7 @@
 package com.example.demo.config
 
-import org.apache.tinkerpop.gremlin.driver.Cluster
 import org.apache.tinkerpop.gremlin.driver.Client
+import org.apache.tinkerpop.gremlin.driver.Cluster
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,29 +9,20 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class GremlinConfig {
 
-    @Value("\${gremlin.uri}")
-    lateinit var uri: String
+    @Value("\${gremlin.server.host}")
+    private lateinit var gremlinHost: String
 
-    @Value("\${gremlin.port}")
-    var port: Int = 7687  // Default Bolt port
-
-    @Value("\${gremlin.username}")
-    lateinit var username: String
-
-    @Value("\${gremlin.password}")
-    lateinit var password: String
+    @Value("\${gremlin.server.port}")
+    private lateinit var gremlinPort: String
 
     @Bean
-    fun gremlinCluster(): Cluster {
-        return Cluster.build()
-            .addContactPoint(uri)
-            .port(port)
-            .credentials(username, password) // Enable SSL
+    fun gremlinClient(): Client {
+        val cluster = Cluster.build()
+            .addContactPoint(gremlinHost)
+            .port(Integer.parseInt(gremlinPort))
+            .serializer(org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV3d0())
+//            .serializer(org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0())
             .create()
-    }
-
-    @Bean
-    fun gremlinClient(cluster: Cluster): Client {
         return cluster.connect()
     }
 }
